@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игровое приложение</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .button {
+            background: linear-gradient(90deg, #4CAF50, #2E7D32);
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s;
+        }
+        .button:hover {
+            background: linear-gradient(90deg, #45a049, #1B5E20);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        .button:active {
+            transform: translateY(1px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+        #particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Количество кликов: <span id="clickCount">0</span></h1>
+<button class="button" id="clickButton">Кликни меня</button>
+<button class="button" id="registerButton">Регистрация</button>
+<button class="button" id="loginButton">Вход</button>
+
+<div id="particles"></div>
+
+<script>
+    let clickCount = localStorage.getItem('clickCount') ? parseInt(localStorage.getItem('clickCount')) : 0;
+    const clickCountDisplay = document.getElementById('clickCount');
+    clickCountDisplay.innerText = clickCount;
+
+    document.getElementById('clickButton').onclick = () => {
+        clickCount++;
+        localStorage.setItem('clickCount', clickCount);
+        clickCountDisplay.innerText = clickCount;
+        
+        if (clickCount === 50) {
+            createParticles();
+        } else if (clickCount === 100) {
+            createLasers();
+        }
+    };
+
+    function createParticles() {
+        const particlesWrapper = document.getElementById('particles');
+        for (let i = 0; i < 100; i++) {
+            const particle = document.createElement('div');
+            particle.style.position = 'absolute';
+            particle.style.width = '5px';
+            particle.style.height = '5px';
+            particle.style.backgroundColor = 'yellow';
+            particle.style.borderRadius = '50%';
+            particle.style.left = Math.random() * window.innerWidth + 'px';
+            particle.style.top = Math.random() * window.innerHeight + 'px';
+            particlesWrapper.appendChild(particle);
+            setTimeout(() => {
+                particle.remove();
+            }, 2000);
+        }
+    }
+
+    function createLasers() {
+        for (let i = 0; i < 10; i++) {
+            const laser = document.createElement('div');
+            laser.style.position = 'absolute';
+            laser.style.width = '2px';
+            laser.style.height = '100px';
+            laser.style.backgroundColor = 'red';
+            laser.style.left = Math.random() * window.innerWidth + 'px';
+            laser.style.top = '0px';
+            document.body.appendChild(laser);
+            laser.animate([
+                { top: '-100px' },
+                { top: window.innerHeight + 'px' }
+            ], { duration: 2000, fill: 'forwards' });
+            setTimeout(() => {
+                laser.remove();
+            }, 2000);
+        }
+    }
+
+    document.getElementById('registerButton').onclick = () => {
+        const username = prompt("Введите имя пользователя:");
+        if (username) {
+            localStorage.setItem('username', username);
+            alert("Регистрация завершена!");
+        }
+    };
+
+    document.getElementById('loginButton').onclick = () => {
+        const username = prompt("Введите имя пользователя для входа:");
+        if (username === localStorage.getItem('username')) {
+            alert("Добро пожаловать, " + username + "!");
+        } else {
+            alert("Имя пользователя не найдено.");
+        }
+    };
+</script>
+
+</body>
+</html>
